@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>ブレイリーず</title>
+
+	
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <!-- AOS (Animate on Scroll) -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+    <!-- Custom Styles -->
+    <style>
+        /* ロードアニメーション */
+        #loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #1f2937;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #ffa500;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* カスタムテーマ選択画面 */
+        #theme-selection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+            transition: opacity 0.5s ease;
+            opacity: 1;
+            visibility: visible;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #theme-selection.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .theme-card {
+            width: 200px;
+            height: 200px;
+            margin: 0 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .theme-card:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-card.light {
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+
+        .theme-card.dark {
+            background-color: #1f2937;
+            color: #ffffff;
+        }
+
+        .theme-label {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        /* グローバルスタイル */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color, #1f2937);
+            color: var(--text-color, #ffffff);
+            line-height: 1.6;
+            margin: 0;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--text-color, #ffffff);
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #ffa500;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* ヘッダー */
+        header {
+            background-color: var(--header-bg-color, #1f2937);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            transition: background-color 0.3s ease;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ffa500;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav a {
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+
+        nav a.active {
+            color: #ffa500;
+            border-bottom: 2px solid #ffa500;
+        }
+
+        /* ハンバーガーメニュー */
+        .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    z-index: 1001;
+    background-color: var(--header-bg-color, #2a2a2a);
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    transition: background-color 0.3s ease;
+    outline: none; /* フォーカス時のアウトラインを削除 */
+    -webkit-tap-highlight-color: transparent; /* モバイルでのハイライトを削除 */
+}
+
+        .hamburger:hover {
+            background-color: #444444;
+        }
+
+        .hamburger span {
+            background-color: var(--text-color, #ffffff);
+            height: 3px;
+            width: 25px;
+            margin: 4px 0;
+            transition: all 0.3s ease;
+        }
+		/* ハンバーガーメニューハイライト */
+.hamburger.highlight {
+    background-color: #ffa500; /* ハイライトカラー */
+    color: #ffffff; /* テキストカラー */
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.hamburger.highlight span {
+    background-color: #ffffff; /* ハイライト時のバーの色 */
+}
+
+        .hamburger.open span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.open span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        .nav-links {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            background-color: var(--header-bg-color, #2a2a2a);
+            transition: all 0.3s ease;
+            z-index: 999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-links ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links ul li {
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .nav-links ul li a {
+            font-size: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links ul li a:hover {
+            color: #ffa500;
+        }
+
+        /* オーバーレイ */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 998;
+        }
+
+        /* ヒーローセクション */
+        .hero {
+            position: relative;
+            height: 70vh;
+            background: url('IMG_3717.jpeg') center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            margin-top: 70px;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 0;
+            transition: background 0.3s ease;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            color: #ffffff;
+            padding: 0 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .hero-content.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hero-content h1 {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .hero-content .cta-button {
+            padding: 10px 20px;
+            background-color: #ffa500;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .hero-content .cta-button:hover {
+            background-color: #ffffff;
+            color: #ffa500;
+        }
+
+        /* ABOUTセクション */
+        .about {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 70px 0;
+            background-color: var(--section-bg-color, #333333);
+            flex-wrap: wrap;
+            box-sizing: border-box;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.3s ease;
+        }
+
+        .about.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about .text {
+            width: 60%;
+            padding: 0 10px;
+            box-sizing: border-box;
+            transition: color 0.3s ease;
+        }
+
+        .about .text h2 {
+            color: #ffa500;
+            margin-bottom: 20px;
+        }
+
+        .about .text p {
+            margin-bottom: 15px;
+        }
+
+        .about .image {
+            width: 35%;
+            position: relative;
+            padding: 0 10px;
+            box-sizing: border-box;
+            transition: filter 0.3s ease;
+        }
+
+        .about .image img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .about .text,
+            .about .image {
+                width: 100%;
+            }
+        }
+
+        /* NEWSセクション */
+        .news {
+            padding: 50px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .news.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .news h2 {
+            color: #ffa500;
+            text-align: center;
+            margin-bottom: 30px;
+        
+				}
+
+        .news-item {
+            background-color: var(--card-bg-color, #2a2a2a);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            max-width: 800px;
+            margin: 20px auto;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .news-item .title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #ffa500;
+            margin-bottom: 10px;
+        }
+
+        .news-item .date {
+            color: #aaaaaa;
+            white-space: nowrap;
+        }
+
+        /* MEMBERSセクション */
+        .members {
+            padding: 50px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.3s ease;
+        }
+
+        .members.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .members h2 {
+            color: #ffa500;
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .member-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .member-card {
+            background-color: var(--card-bg-color, #2a2a2a);
+            width: calc(33% - 20px);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            transition: transform 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+            box-sizing: border-box;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .member-card:hover {
+            transform: translateY(-10px);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .member-card img {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+            margin-bottom: 15px;
+            transition: filter 0.3s ease;
+        }
+
+        .member-card img:hover {
+            filter: brightness(100%);
+        }
+
+        .member-card h3 {
+            margin-bottom: 10px;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .member-card h3::after {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 2px;
+            background-color: #ffa500;
+            bottom: 0;
+            left: 0;
+        }
+
+        .member-card p {
+            margin-bottom: 10px;
+        }
+
+        .member-card .social-links a {
+            color: #ffa500;
+            margin-right: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .member-card .social-links a:hover {
+            color: #ffffff;
+        }
+
+        @media (max-width: 768px) {
+            .member-card {
+                width: calc(50% - 10px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .member-card {
+                width: 100%;
+            }
+        }
+
+        /* FAQセクション */
+        .faq {
+            padding: 50px 0;
+            background-color: var(--faq-bg-color, #404040);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .faq.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .faq h2 {
+            color: #ffa500;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            padding: 0 20px;
+            box-sizing: border-box;
+            max-width: 800px;
+            margin: 20px auto;
+            text-align: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .faq-item h3 {
+            cursor: pointer;
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 25px;
+            text-align: left;
+        }
+
+        .faq-item h3::before {
+            content: '+';
+            position: absolute;
+            left: 0;
+            color: #ffa500;
+            font-size: 24px;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item h3.active::before {
+            transform: rotate(45deg);
+        }
+
+        .faq-item .answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            text-align: left;
+        }
+
+        .faq-item .answer p {
+            margin-bottom: 15px;
+        }
+
+        /* OUR IMPACTセクション */
+        .impact {
+            padding: 50px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.3s ease;
+        }
+
+        .impact.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .impact .text {
+            width: 50%;
+            padding: 0 10px;
+            box-sizing: border-box;
+            transition: color 0.3s ease;
+        }
+
+        .impact .text h2 {
+            color: #ffa500;
+            margin-bottom: 20px;
+        }
+
+        .impact .text p {
+            margin-bottom: 15px;
+        }
+
+        .impact .image {
+            width: 45%;
+            position: relative;
+            padding: 0 10px;
+            box-sizing: border-box;
+            transition: filter 0.3s ease;
+        }
+
+        .impact .image img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .impact .text,
+            .impact .image {
+                width: 100%;
+            }
+        }
+
+        /* JOIN USセクション */
+        .join-us {
+            padding: 50px 0;
+            background-color: var(--join-us-bg-color, #333333);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.3s ease;
+        }
+
+        .join-us.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .join-us h2 {
+            color: #ffa500;
+            margin-bottom: 30px;
+        }
+
+        .join-us p {
+            margin-bottom: 20px;
+            max-width: 600px;
+            margin: 0 auto 20px auto;
+            padding: 0 10px;
+            box-sizing: border-box;
+            transition: color 0.3s ease;
+        }
+
+        .join-us .join-button {
+            padding: 10px 20px;
+            background-color: #ffa500;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .join-us .join-button:hover {
+            background-color: #ffffff;
+            color: #ffa500;
+        }
+
+        /* SNSセクション */
+        .social-call-to-action {
+            padding: 50px 0;
+            background-color: var(--social-bg-color, #404040);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.3s ease;
+        }
+
+        .social-call-to-action.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .social-call-to-action h2 {
+            color: #ffa500;
+            margin-bottom: 30px;
+        }
+
+        .social-call-to-action p {
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .social-call-to-action .social-icons {
+            margin-top: 20px;
+        }
+
+        .social-call-to-action .social-icons a {
+            color: #ffa500;
+            margin: 0 10px;
+            font-size: 32px;
+            transition: color 0.3s ease;
+        }
+
+        .social-call-to-action .social-icons a:hover {
+            color: #ffffff;
+        }
+
+        /* CONTACT USセクション */
+        .contact {
+            padding: 50px 0;
+            background-color: var(--contact-bg-color, #2a2a2a);
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease, background-color 0.3s ease;
+        }
+
+        .contact.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .contact h2 {
+            color: #ffa500;
+            margin-bottom: 30px;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--contact-form-bg-color, #333333);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: var(--input-bg-color, #444444);
+            color: var(--input-text-color, #ffffff);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .contact-form textarea {
+            height: 150px;
+            resize: vertical;
+        }
+
+        .contact-form button {
+            padding: 10px 20px;
+            background-color: #ffa500;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background-color: #ffffff;
+            color: #ffa500;
+        }
+
+        /* フッター */
+        footer {
+            background-color: var(--footer-bg-color, #1f2937);
+            padding: 20px 0;
+            text-align: center;
+            color: var(--footer-text-color, #ffffff);
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-bottom: 100px;
+        }
+
+        footer .social-icons a {
+            color: #ffa500;
+            margin: 0 10px;
+            font-size: 24px;
+            transition: color 0.3s ease;
+        }
+
+        footer .social-icons a:hover {
+            color: #ffffff;
+        }
+
+        /* トップに戻るボタンとダークモードボタンを水平に配置 */
+        .fixed-buttons {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .back-to-top,
+        .dark-mode-toggle {
+            background-color: #ffa500;
+            color: #ffffff;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .back-to-top:hover,
+        .dark-mode-toggle:hover {
+            background-color: #ffffff;
+            color: #ffa500;
+        }
+
+        .dark-mode-toggle {
+            border-radius: 25px;
+            width: 100px;
+        }
+
+        .dark-mode-toggle[data-mode="dark"] {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .fixed-buttons.open {
+            z-index: 997; /* ハンバーガーメニュー時に下のレイヤーに配置 */
+        }
+
+        @media (max-width: 768px) {
+    nav {
+        display: none; /* モバイルではデスクトップのナビゲーションを非表示にする */
+    }
+
+    .hamburger {
+        display: flex; /* モバイルではハンバーガーメニューを表示 */
+    }
+
+    .nav-links {
+        display: flex; /* ハンバーガーメニューが開かれたときに表示する */
+        flex-direction: column;
+        position: fixed;
+        top: 70px; /* ヘッダーとメニューの間にスペースを確保 */
+        left: 0;
+        width: 100%;
+        background-color: var(--header-bg-color, #2a2a2a);
+        z-index: 999; /* 他のコンテンツよりも上に表示する */
+    }
+}
+
+@media (min-width: 769px) {
+    nav {
+        display: flex; /* デスクトップではナビゲーションを表示 */
+        gap: 20px;
+    }
+
+    .hamburger {
+        display: none; /* デスクトップではハンバーガーメニューを非表示 */
+    }
+
+    .nav-links {
+        display: none; /* デスクトップでモバイルナビゲーションが表示されないようにする */
+    }
+}
+    </style>
+</head>
+
+<body>
+    <!-- ロードアニメーション -->
+    <div id="loading">
+        <div class="loader"></div>
+    </div>
+
+    <!-- テーマ選択画面 -->
+    <div id="theme-selection">
+        <div class="theme-card light" onclick="selectTheme('light')">
+            <div class="theme-label">ライトモード</div>
+        </div>
+        <div class="theme-card dark" onclick="selectTheme('dark')">
+            <div class="theme-label">ダークモード</div>
+        </div>
+    </div>
+
+    <!-- ヘッダー -->
+    <header>
+    <div class="logo">
+        <img src="IMG_3714.jpeg" alt="ブレイリーずアイコン">
+        ブレイリーず
+    </div>
+    <nav>
+        <a href="#about" class="nav-link">ABOUT</a>
+        <a href="#news" class="nav-link">NEWS</a>
+        <a href="#members" class="nav-link">MEMBERS</a>
+        <a href="#faq" class="nav-link">FAQ</a>
+        <a href="#impact" class="nav-link">OUR IMPACT</a>
+        <a href="#join-us" class="nav-link">JOIN US</a>
+        <a href="#social" class="nav-link">SOCIAL</a>
+        <a href="#contact" class="nav-link">CONTACT US</a>
+    </nav>
+    <button class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+</header>
+
+    <!-- オーバーレイ -->
+    <div class="overlay"></div>
+
+    <!-- ハンバーガーメニュー -->
+    <nav class="nav-links">
+        <ul>
+            <li><a href="#about" class="nav-link">ABOUT</a></li>
+            <li><a href="#news" class="nav-link">NEWS</a></li>
+            <li><a href="#members" class="nav-link">MEMBERS</a></li>
+            <li><a href="#faq" class="nav-link">FAQ</a></li>
+            <li><a href="#impact" class="nav-link">OUR IMPACT</a></li>
+            <li><a href="#join-us" class="nav-link">JOIN US</a></li>
+            <li><a href="#social" class="nav-link">SOCIAL</a></li>
+            <li><a href="#contact" class="nav-link">CONTACT US</a></li>
+        </ul>
+    </nav>
+
+    <!-- ヒーローセクション -->
+    <section class="hero">
+        <div class="hero-content animate__animated animate__fadeIn">
+            <h1>Let's Brighten the Future with Braille!</h1>
+            <button class="cta-button" onclick="scrollToContact()">プロジェクトに参加</button>
+        </div>
+    </section>
+
+    <!-- ABOUTセクション -->
+    <section id="about" class="about container" data-aos="fade-up">
+        <div class="text">
+            <h2>私たちについて</h2>
+            <p>ブレイリーずは、視覚に障害を抱える高校生とその幼なじみで結成されたチームです。視覚障害者が自分の夢を追求し、可能性を最大限に引き出せる社会を実現することを目指しています。</p>
+            <p>私たちは、「点字塾Braillie」を通じて、視覚障害者が自由に学び、社会で活躍できる機会を提供します。障害の有無に関わらず、すべての人が平等に学べる環境を創造します。</p>
+        </div>
+        <div class="image">
+            <img src="IMG_3715.jpeg" alt="チーム活動の写真">
+        </div>
+    </section>
+
+    <!-- NEWSセクション -->
+    <section id="news" class="news container" data-aos="fade-up">
+        <h2>ニュース</h2>
+        <div class="news-item">
+            <div class="title">ニュース記事のタイトル1</div>
+            <div class="date">2024年8月6日</div>
+        </div>
+        <div class="news-item">
+            <div class="title">ニュース記事のタイトル2</div>
+            <div class="date">2024年8月5日</div>
+        </div>
+        <div class="news-item">
+            <div class="title">ニュース記事のタイトル3</div>
+            <div class="date">2024年8月4日</div>
+        </div>
+    </section>
+
+    <!-- MEMBERSセクション -->
+    <section id="members" class="members container" data-aos="fade-up">
+        <h2>私たちのチーム</h2>
+        <div class="member-grid">
+            <div class="member-card">
+                <img src="WebP画像.jpeg" alt="メンバー1">
+                <h3>小波唯奈</h3>
+                <p>網膜色素変性症が小学生の頃に発覚。進行性の病気で、視野はストローを覗いている程度。当事者として、視覚障害の教育課題を解決するためにBrailiesを結成。中学までは一般校に通い、高校で盲学校にシフトした。現在は一般大学で、リベラルアーツを学んでいる！</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-note"></i></a>
+                </div>
+            </div>
+            <div class="member-card">
+                <img src="WebP画像 2.jpeg" alt="メンバー2">
+                <h3>山中麻里江</h3>
+                <p>代表の小波とは小学生の時からの幼なじみ。視覚障害に関することを聞くなかで、晴眼者（目が見える人）として課題にアプローチしていきたいと考えるようになり、高校生の時にBrailiesを共に結成した。現在は、大学で医学を志し奮闘中！</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-note"></i></a>
+                </div>
+            </div>
+            <div class="member-card">
+                <img src="IMG_3718.jpeg" alt="メンバー3">
+                <h3>川野史帆里</h3>
+                <p>共同代表とは高校のクラスメートで、Brailliesで一緒に新たなことに挑戦したいという想いでメンバーに。クリエイティビティの面でとても頼りになる。会議では細かいところまで気づいて指摘してくれる、慎重な分析家！大学では医学の勉強に励んでいる。</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-note"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQセクション -->
+    <section id="faq" class="faq container" data-aos="fade-up">
+        <h2>よくある質問</h2>
+        <div class="faq-item">
+            <h3>「点字塾Braillie」とは何ですか？</h3>
+            <div class="answer">
+                <p>「点字塾Braillie」は、視覚障害者が障害に縛られることなく、自分の可能性を広げるための学びの場です。視覚障害者でも自由に学び、将来の選択肢を広げられる社会を作ることを目指しています。</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <h3>なぜこのプロジェクトを始めたのですか？</h3>
+            <div class="answer">
+                <p>視覚障害者が夢を諦めることなく、自分の可能性を最大限に引き出せる環境を作ることを目指しています。私たちは、視覚障害者が自由に学び、社会で活躍できる機会を提供します。</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <h3>活動内容は？</h3>
+            <div class="answer">
+                <p>ブレイリーずでは、視覚障害者の教育環境を改善するための啓発活動や、学びの機会を提供するためのイベントを開催しています。また、視覚障害者の学習をサポートするための新しいプロジェクトを進めています。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- OUR IMPACTセクション -->
+    <section id="impact" class="impact container" data-aos="fade-up">
+        <div class="text">
+            <h2>私たちの影響</h2>
+            <p>ブレイリーずは、視覚障害者が自由に学べる環境を提供することを目指しており、その活動を通じて多くの視覚障害者に新たな可能性を開いてきました。過去の実績をインフォグラフィックを用いて紹介し、具体的な影響をテキストで説明します。</p>
+        </div>
+        <div class="image">
+            <img src="IMG_3716.jpeg" alt="活動の影響">
+        </div>
+    </section>
+
+    <!-- JOIN USセクション -->
+    <section id="join-us" class="join-us" data-aos="fade-up">
+        <h2>私たちと一緒に未来を変えましょう！</h2>
+        <p>ブレイリーずのプロジェクトに参加し、視覚障害者の未来をより明るくするために協力しませんか？以下の手順に従って、参加フォームに記入してください。</p>
+        <button class="join-button" onclick="scrollToContact()">参加フォームに記入</button>
+    </section>
+
+    <!-- SNSセクション -->
+    <section id="social" class="social-call-to-action container" data-aos="fade-up">
+        <h2>フォローしてサポートをお願いします！</h2>
+        <p>私たちのSNSをフォローして、最新情報を受け取りましょう！</p>
+        <div class="social-icons">
+            <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://note.com" target="_blank"><i class="fab fa-note"></i></a>
+        </div>
+    </section>
+
+    <!-- CONTACT USセクション -->
+    <section id="contact" class="contact container" data-aos="fade-up">
+    <h2>お問い合わせ</h2>
+    <div class="contact-form">
+        <form id="contactForm">
+            <input type="text" id="name" placeholder="お名前" required>
+            <input type="text" id="subject" placeholder="件名" required>
+            <textarea id="message" placeholder="お問い合わせ内容" required></textarea>
+            <button type="submit">送信</button>
+        </form>
+    </div>
+</section>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // フォームのデフォルトの送信動作を防ぐ
+
+    var name = document.getElementById('name').value;
+    var subject = document.getElementById('subject').value;
+    var message = document.getElementById('message').value;
+    var currentDateTime = new Date().toLocaleString();
+
+    var mailSubject = 'お問い合わせ: ' + subject;
+    var body = 'お名前: ' + name + '\n' +
+               'お問い合わせ日時: ' + currentDateTime + '\n\n' +
+               'お問い合わせ内容:\n' + message;
+
+    var mailtoLink = 'mailto:support@example.com' + // 送信先のメールアドレスを指定してください
+                     '?subject=' + encodeURIComponent(mailSubject) +
+                     '&body=' + encodeURIComponent(body);
+
+    window.location.href = mailtoLink;
+});
+</script>
+
+    <!-- フッター -->
+    <footer>
+        <p>© 2024 ブレイリーず | All Rights Reserved</p>
+        <div class="social-icons">
+            <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://note.com" target="_blank"><i class="fab fa-note"></i></a>
+        </div>
+    </footer>
+
+    <!-- トップに戻るボタンとダークモードトグルボタン -->
+    <div class="fixed-buttons" id="fixed-buttons">
+        <button class="dark-mode-toggle" id="dark-mode-toggle" data-mode="light">
+            <i class="fas fa-moon"></i><span>ダーク</span>
+        </button>
+        <button class="back-to-top" id="back-to-top">
+            <i class="fas fa-arrow-up"></i>
+        </button>
+    </div>
+
+    <!-- AOS Animation -->
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
+
+    <!-- JavaScript -->
+    <script>
+			// ロードアニメーション
+window.addEventListener('load', () => {
+    document.getElementById('loading').style.display = 'none';
+    handleScrollAnimation();
+    toggleBackToTopButton();
+    highlightNavLink();
+});
+
+// 初回ロード時のテーマ選択
+window.addEventListener('DOMContentLoaded', () => {
+    const darkMode = getDarkModeFromCookie();
+    const themeSelection = document.getElementById('theme-selection');
+    if (darkMode !== null) {
+        // クッキーにダークモード設定がある場合
+        setDarkMode(darkMode);
+        themeSelection.style.display = 'none'; // 既に設定がある場合は非表示
+    } else {
+        themeSelection.style.display = 'flex'; // 設定がない場合は表示
+    }
+});
+
+// テーマ選択時の処理
+function selectTheme(theme) {
+    if (theme === 'light') {
+        setDarkMode(false);
+        setDarkModeToCookie(false);
+    } else if (theme === 'dark') {
+        setDarkMode(true);
+        setDarkModeToCookie(true);
+    }
+    document.getElementById('theme-selection').style.display = 'none'; // テーマ選択後に非表示にする
+}
+
+// ダークモード設定の初期化
+function setDarkMode(enabled) {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+
+    if (enabled) {
+        document.documentElement.style.setProperty('--background-color', '#1f2937');
+        document.documentElement.style.setProperty('--text-color', '#ffffff');
+        document.documentElement.style.setProperty('--header-bg-color', '#1f2937');
+        document.documentElement.style.setProperty('--section-bg-color', '#333333');
+        document.documentElement.style.setProperty('--card-bg-color', '#2a2a2a');
+        document.documentElement.style.setProperty('--faq-bg-color', '#404040');
+        document.documentElement.style.setProperty('--join-us-bg-color', '#333333');
+        document.documentElement.style.setProperty('--social-bg-color', '#404040');
+        document.documentElement.style.setProperty('--contact-bg-color', '#2a2a2a');
+        document.documentElement.style.setProperty('--contact-form-bg-color', '#333333');
+        document.documentElement.style.setProperty('--input-bg-color', '#444444');
+        document.documentElement.style.setProperty('--input-text-color', '#ffffff');
+        document.documentElement.style.setProperty('--footer-bg-color', '#1f2937');
+        document.documentElement.style.setProperty('--footer-text-color', '#ffffff');
+        darkModeToggle.setAttribute('data-mode', 'dark');
+        darkModeToggle.style.backgroundColor = '#ffffff';
+        darkModeToggle.style.color = '#000000';
+        darkModeToggle.innerHTML = '<i class="fas fa-sun"></i><span>ライト</span>';
+    } else {
+        document.documentElement.style.setProperty('--background-color', '#ffffff');
+        document.documentElement.style.setProperty('--text-color', '#1f2937');
+        document.documentElement.style.setProperty('--header-bg-color', '#f9fafb');
+        document.documentElement.style.setProperty('--section-bg-color', '#f3f4f6');
+        document.documentElement.style.setProperty('--card-bg-color', '#ffffff');
+        document.documentElement.style.setProperty('--faq-bg-color', '#f9fafb');
+        document.documentElement.style.setProperty('--join-us-bg-color', '#f3f4f6');
+        document.documentElement.style.setProperty('--social-bg-color', '#f9fafb');
+        document.documentElement.style.setProperty('--contact-bg-color', '#ffffff');
+        document.documentElement.style.setProperty('--contact-form-bg-color', '#f3f4f6');
+        document.documentElement.style.setProperty('--input-bg-color', '#e5e7eb');
+        document.documentElement.style.setProperty('--input-text-color', '#1f2937');
+        document.documentElement.style.setProperty('--footer-bg-color', '#f9fafb');
+        document.documentElement.style.setProperty('--footer-text-color', '#1f2937');
+        darkModeToggle.setAttribute('data-mode', 'light');
+        darkModeToggle.style.backgroundColor = '#000000';
+        darkModeToggle.style.color = '#ffffff';
+        darkModeToggle.innerHTML = '<i class="fas fa-moon"></i><span>ダーク</span>';
+    }
+}
+
+// クッキーからダークモード設定を取得
+function getDarkModeFromCookie() {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [name, value] = cookie.split('=');
+        if (name.trim() === 'darkMode') {
+            return value === 'true';
+        }
+    }
+    return null;
+}
+
+// クッキーにダークモード設定を保存
+function setDarkModeToCookie(enabled) {
+    document.cookie = `darkMode=${enabled};path=/;max-age=31536000`; // 1年間有効
+}
+
+// ダークモードトグルボタンのクリックイベント
+document.getElementById('dark-mode-toggle').addEventListener('click', () => {
+    const currentDarkMode = document.getElementById('dark-mode-toggle').getAttribute('data-mode') === 'dark';
+    setDarkMode(!currentDarkMode);
+    setDarkModeToCookie(!currentDarkMode);
+});
+
+// FAQのアコーディオン機能
+document.querySelectorAll('.faq-item h3').forEach(item => {
+    item.addEventListener('click', () => {
+        item.classList.toggle('active');
+        let answer = item.nextElementSibling;
+        if (answer.style.maxHeight) {
+            answer.style.maxHeight = null;
+        } else {
+            answer.style.maxHeight = answer.scrollHeight + "px";
+        }
+    });
+});
+
+// ハンバーガーメニューの切り替え
+const hamburger = document.querySelector('.hamburger');
+const navLinks = document.querySelector('.nav-links');
+const overlay = document.querySelector('.overlay');
+const fixedButtons = document.getElementById('fixed-buttons');
+
+hamburger.addEventListener('click', () => {
+    if (window.innerWidth <= 768) { // モバイル画面のみで動作
+        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+        overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
+        hamburger.classList.toggle('highlight'); // ハイライトを切り替え
+        fixedButtons.classList.toggle('open');
+    }
+});
+
+overlay.addEventListener('click', () => {
+    navLinks.style.display = 'none';
+    overlay.style.display = 'none';
+    hamburger.classList.remove('highlight'); // ハイライトを削除
+    fixedButtons.classList.remove('open');
+});
+
+// ハンバーガーメニュー内のナビゲーションリンクのクリックイベント
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+        navLinks.style.display = 'none';
+        overlay.style.display = 'none';
+        hamburger.classList.remove('highlight'); // ハイライトを削除
+        fixedButtons.classList.remove('open');
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    // ページロード時にハンバーガーメニューとオーバーレイを非表示に設定
+    const navLinks = document.querySelector('.nav-links');
+    const overlay = document.querySelector('.overlay');
+
+    navLinks.style.display = 'none';
+    overlay.style.display = 'none';
+});
+
+// スクロールアニメーション
+const scrollElements = document.querySelectorAll('.hero-content, .about, .news, .members, .faq, .impact, .join-us, .social-call-to-action, .contact');
+
+const elementInView = (el, dividend = 1) => {
+    const elementTop = el.getBoundingClientRect().top;
+
+    return (
+        elementTop <=
+        (window.innerHeight || document.documentElement.clientHeight) / dividend
+    );
+};
+
+const displayScrollElement = (element) => {
+    element.classList.add('show');
+};
+
+const handleScrollAnimation = () => {
+    scrollElements.forEach((el) => {
+        if (elementInView(el, 1.25)) {
+            displayScrollElement(el);
+        }
+    });
+};
+
+window.addEventListener('scroll', () => {
+    handleScrollAnimation();
+    highlightNavLink();
+});
+
+handleScrollAnimation();
+
+// トップに戻るボタンの機能
+const backToTopButton = document.getElementById('back-to-top');
+
+const toggleBackToTopButton = () => {
+    if (window.pageYOffset > 300) {
+        backToTopButton.style.display = 'flex';
+    } else {
+        backToTopButton.style.display = 'none';
+    }
+};
+
+window.addEventListener('scroll', toggleBackToTopButton);
+
+backToTopButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+    // ボタンの色をリセット
+    setTimeout(() => {
+        backToTopButton.style.backgroundColor = '#ffa500';
+        backToTopButton.style.color = '#ffffff';
+    }, 300); // スクロール後に色をリセット
+});
+
+// 初期状態でボタンを非表示に
+backToTopButton.style.display = 'none';
+
+// スムーズスクロール
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const targetId = this.getAttribute('href');
+        const targetElement = document.querySelector(targetId);
+
+        if (targetElement) {
+            const headerHeight = document.querySelector('header').offsetHeight; // ヘッダーの高さを取得
+            const targetPosition = targetElement.offsetTop - headerHeight; // 目標位置からヘッダーの高さを引く
+
+            window.scrollTo({
+                top: targetPosition,
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// スクロールに応じたナビゲーションリンクのハイライト
+const navLinksArray = document.querySelectorAll('.nav-link');
+let lastClickedLink = null;
+
+function highlightNavLink() {
+    const scrollPosition = window.scrollY;
+    let currentSection = null;
+
+    navLinksArray.forEach(link => {
+        const section = document.querySelector(link.getAttribute('href'));
+        if (section.offsetTop <= scrollPosition && (section.offsetTop + section.offsetHeight) > scrollPosition) {
+            currentSection = section;
+        }
+    });
+
+    navLinksArray.forEach(link => {
+        if (currentSection && link.getAttribute('href') === `#${currentSection.id}`) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
+// ナビゲーションリンクのクリックイベント
+navLinksArray.forEach(link => {
+    link.addEventListener('click', function (e) {
+        lastClickedLink = this;
+        navLinksArray.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+        setTimeout(() => {
+            lastClickedLink = null;
+        }, 1000); // 1秒後にリセット
+    });
+});
+
+// お問い合わせセクションへのスクロール
+function scrollToContact() {
+    document.querySelector('#contact').scrollIntoView({
+        behavior: 'smooth'
+    });
+}
+
+    </script>
+</body>
+
+</html>
